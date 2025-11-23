@@ -12,6 +12,9 @@ import pickle
 import numpy as np
 import streamlit as st
 import warnings
+import os
+from pathlib import Path
+
 warnings.filterwarnings('ignore')
 
 
@@ -23,15 +26,34 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Get the directory where this script is located
+script_dir = Path(__file__).parent
+
 # Load pre-trained model and scaler
-try:
-    with open("trained_diabetes_model.sav", 'rb') as model_file:
-        diabetes_model = pickle.load(model_file)
-    with open("scaler.sav", 'rb') as scaler_file:
-        diabetes_scaler = pickle.load(scaler_file)
-except FileNotFoundError as e:
-    st.error(f"Error: Could not load model files. {e}")
-    st.stop()
+@st.cache_resource
+def load_models():
+    """Load the trained diabetes model and scaler from saved files."""
+    try:
+        model_path = script_dir / "trained_diabetes_model.sav"
+        scaler_path = script_dir / "scaler.sav"
+        
+        if not model_path.exists():
+            st.error(f"Model file not found: {model_path}")
+            st.stop()
+        if not scaler_path.exists():
+            st.error(f"Scaler file not found: {scaler_path}")
+            st.stop()
+            
+        with open(model_path, 'rb') as model_file:
+            model = pickle.load(model_file)
+        with open(scaler_path, 'rb') as scaler_file:
+            scaler = pickle.load(scaler_file)
+        return model, scaler
+    except Exception as e:
+        st.error(f"Error loading models: {str(e)}")
+        st.stop()
+
+diabetes_model, diabetes_scaler = load_models()
 
 
 def predict_diabetes(input_data):
