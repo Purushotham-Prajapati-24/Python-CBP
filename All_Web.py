@@ -102,12 +102,11 @@ def main():
     )
     
     # Add info box
-    with st.info():
-        st.markdown("""
-        **Note:** This prediction tool is for educational purposes only and should not be 
-        used as a substitute for professional medical advice. Please consult a healthcare 
-        provider for accurate diagnosis and treatment.
-        """)
+    st.info("""
+    **Note:** This prediction tool is for educational purposes only and should not be 
+    used as a substitute for professional medical advice. Please consult a healthcare 
+    provider for accurate diagnosis and treatment.
+    """)
     
     # Create form for input
     st.subheader("Medical Parameters")
