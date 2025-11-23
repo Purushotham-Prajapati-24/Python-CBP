@@ -24,20 +24,14 @@ st.set_page_config(
 )
 
 # Load pre-trained model and scaler
-@st.cache_resource
-def load_models():
-    """Load the trained diabetes model and scaler from saved files."""
-    try:
-        with open("trained_diabetes_model.sav", 'rb') as model_file:
-            model = pickle.load(model_file)
-        with open("scaler.sav", 'rb') as scaler_file:
-            scaler = pickle.load(scaler_file)
-        return model, scaler
-    except FileNotFoundError as e:
-        st.error(f"Error: Could not load model files. {e}")
-        st.stop()
-
-diabetes_model, diabetes_scaler = load_models()
+try:
+    with open("trained_diabetes_model.sav", 'rb') as model_file:
+        diabetes_model = pickle.load(model_file)
+    with open("scaler.sav", 'rb') as scaler_file:
+        diabetes_scaler = pickle.load(scaler_file)
+except FileNotFoundError as e:
+    st.error(f"Error: Could not load model files. {e}")
+    st.stop()
 
 
 def predict_diabetes(input_data):
